@@ -4,6 +4,14 @@ node_js:
 cache:
   directories:
     - node_modules
+
+addons:
+  sonarcloud:
+    organization: "appvengers"
+    token:
+       secure: "Swk/WggCdi+DaACdbyjgEnDlXbROppA7Vt1CSz7xdDIaG84ECe1ndBrbwPO1rcf4yg9f"
+
 script:
+  - sonar-scanner
   - npm test
   - npm run build
