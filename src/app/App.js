@@ -38,7 +38,8 @@ class App extends Component {
   }
 
   validateOperation(values) {
-    if (values.startsWith("+") || 
+    if (values.startsWith("+") ||
+        values.endsWith("+") || 
         values.includes("++") || 
         !values.includes("+")) {
       return false;
