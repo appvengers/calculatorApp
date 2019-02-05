@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import Button from '@material-ui/core/Button';
-import FormLabel from '@material-ui/core/FormLabel';
+import { Button, LinearProgress , FormLabel} from '@material-ui/core';
 import './App.css';
+import Api from './helpers/api-client';
 
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      result: '0'
+      result: '0',
+      progress: false
     }
   }
   
@@ -27,44 +28,51 @@ class App extends Component {
   clear = () => {
     this.setState({
       result: '0',
+      progress: false
     })
   }
   
-  calculate = (e) => {
-    let all = this.state.result;
-    let numbers = all.split("+");
-    let result = numbers.reduce((n1, n2) => parseInt(n1) + parseInt(n2), 0);
-
-
-    this.setState({
-      result: result.toString()
-    })
-
-    fetch("https://20190131t161653-dot-dotted-byway-229018.appspot.com/services/operations/V1", {
-      method: 'post',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        firstNumber: '4',
-        secondNumber: '5',
-        operation: 'add', 
-      }),
-    })
-    .then(res => res.json())
-    .then(json => {
-      console.log(json.data);
-    })
+  calculate = () => {
+    let values = this.state.result;
+    this.validateOperation(values) ? this.doOperation(values) : alert("Revise la sintaxis de la suma");
   }
 
-  render() {  
+  validateOperation(values) {
+    if (values.startsWith("+") || 
+        values.includes("++") || 
+        !values.includes("+")) {
+      return false;
+    }
+    return true;
+  }
+
+  doOperation(values) {
+    let numbers = values.split("+");
+
+    this.setState({
+      progress: true
+    })
+
+    Api.addOperation(numbers[0], numbers[1]).then(resp => {
+      this.setState({
+        result: resp.result,
+        progress: false
+      })
+    });  
+  }
+
+  render() {
+    let progressBar;
+    if(this.state.progress) {
+      progressBar = <LinearProgress style={{height: '10px'}} color="secondary" />;
+    } else {
+      progressBar = <div />;
+    }   
     return (
       <div className="App">
+        {progressBar}
         <header className="App-header">
-
           Calculadora
-
           <div>
           <FormLabel style={{
             color: "white",
@@ -75,31 +83,31 @@ class App extends Component {
           <div className="App-keyboard">
 
           <div>
-            <Button data-value="7" variant="contained" onClick={() => this.press("7")} color="primary">7</Button>
-            <Button data-value="8" variant="contained" onClick={() => this.press("8")} color="primary">8</Button>
-            <Button data-value="9" variant="contained" onClick={() => this.press("9")} color="primary">9</Button>
-            <Button data-value="/" variant="contained" color="primary">/</Button>
+            <Button variant="contained" onClick={() => this.press("7")} style={{margin: '4px'}} color="primary">7</Button>
+            <Button variant="contained" onClick={() => this.press("8")} style={{margin: '4px'}} color="primary">8</Button>
+            <Button variant="contained" onClick={() => this.press("9")} style={{margin: '4px'}} color="primary">9</Button>
+            <Button variant="contained" style={{margin: '4px'}} color="primary">/</Button>
           </div>
 
            <div>
-            <Button data-value="4" variant="contained" onClick={() => this.press("4")} color="primary">4</Button>
-            <Button data-value="5" variant="contained" onClick={() => this.press("5")} color="primary">5</Button>
-            <Button data-value="6" variant="contained" onClick={() => this.press("6")} color="primary">6</Button>
-            <Button variant="contained" onClick={this.press} color="primary">*</Button>
+            <Button variant="contained" onClick={() => this.press("4")} style={{margin: '4px'}} color="primary">4</Button>
+            <Button variant="contained" onClick={() => this.press("5")} style={{margin: '4px'}} color="primary">5</Button>
+            <Button variant="contained" onClick={() => this.press("6")} style={{margin: '4px'}} color="primary">6</Button>
+            <Button variant="contained" onClick={this.press} style={{margin: '4px'}} color="primary">*</Button>
           </div>
 
           <div>
-            <Button data-value="1" variant="contained" onClick={() => this.press("1")} color="primary">1</Button>
-            <Button data-value="2" variant="contained" onClick={() => this.press("2")} color="primary">2</Button>
-            <Button data-value="3" variant="contained" onClick={() => this.press("3")} color="primary">3</Button>
-            <Button variant="contained" color="primary">-</Button>
+            <Button variant="contained" onClick={() => this.press("1")} style={{margin: '4px'}} color="primary">1</Button>
+            <Button variant="contained" onClick={() => this.press("2")} style={{margin: '4px'}} color="primary">2</Button>
+            <Button variant="contained" onClick={() => this.press("3")} style={{margin: '4px'}} color="primary">3</Button>
+            <Button variant="contained" style={{margin: '4px'}} color="primary">-</Button>
           </div>
 
           <div>
-            <Button data-value="CE" variant="contained" onClick={() => this.clear()} color="primary">CE</Button>
-            <Button data-value="0" variant="contained" onClick={() => this.press("0")} color="primary">0</Button>
-            <Button variant="contained" onClick={this.calculate} color="primary">=</Button>
-            <Button data-value="+" variant="contained" onClick={() => this.press("+")} color="primary">+</Button>
+            <Button variant="contained" onClick={() => this.clear()} style={{margin: '4px'}} color="primary">CE</Button>
+            <Button variant="contained" onClick={() => this.press("0")} style={{margin: '4px'}} color="primary">0</Button>
+            <Button variant="contained" onClick={this.calculate} style={{margin: '4px'}} color="primary">=</Button>
+            <Button variant="contained" onClick={() => this.press("+")} style={{margin: '4px'}} color="primary">+</Button>
           </div> 
           </div>
         </header>
