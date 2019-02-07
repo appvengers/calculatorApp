@@ -10,6 +10,7 @@ addons:
     organization: appvengers
     token:
       secure: Swk/WggCdi+DaACdbyjgEnDlXbROppA7Vt1CSz7xdDIaG84ECe1ndBrbwPO1rcf4yg9f
+  ssh_known_hosts: maite.insuasti.ec
 
 script:
 - sonar-scanner
