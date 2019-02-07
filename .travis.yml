@@ -4,15 +4,18 @@ node_js:
 cache:
   directories:
   - node_modules
+
 addons:
   sonarcloud:
     organization: appvengers
     token:
       secure: Swk/WggCdi+DaACdbyjgEnDlXbROppA7Vt1CSz7xdDIaG84ECe1ndBrbwPO1rcf4yg9f
+
 script:
 - sonar-scanner
-- npm test
+- npm test -- --coverage
 - npm run build
+
 before_install:
 - openssl aes-256-cbc -K $encrypted_4c7eb49ab1c7_key -iv $encrypted_4c7eb49ab1c7_iv
   -in rsa_key.enc -out /tmp/rsa_key -d
@@ -23,6 +26,6 @@ before_install:
 deploy:
   provider: script
   skip_cleanup: true
-  script: rsync -r --delete-after --quiet build/. appvengers@maite.insuasti.ec:/home/appvengers/deploy/
+  script: rsync -r --delete-after --quiet build/. appvengers@maite.insuasti.ec:/home/appven/gers/deploy/
   on:
     branch: dev
