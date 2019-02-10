@@ -8,13 +8,14 @@ cache:
 addons:
   ssh_known_hosts: 
     - maite.insuasti.ec
+    - 35.202.116.156
   sonarcloud:
     organization: appvengers
     token:
       secure: Swk/WggCdi+DaACdbyjgEnDlXbROppA7Vt1CSz7xdDIaG84ECe1ndBrbwPO1rcf4yg9f
 
 script:
-- sonar-scanner
+#- sonar-scanner
 - npm test -- --coverage
 - npm run build
 - rsync -r --delete-after --quiet build/. appvengers@maite.insuasti.ec:/home/appvengers/deploy/
@@ -29,6 +30,6 @@ before_install:
 deploy:
   provider: script
   skip_cleanup: true
-  script: rsync -r --delete-after --quiet build/. appvengers@maite.insuasti.ec:/home/appvengers/deploy/
+  script: rsync -r --delete-after --quiet build/. grupocentrodigital@35.202.116.156:/var/www/html/ 
   on:
     branch: dev
