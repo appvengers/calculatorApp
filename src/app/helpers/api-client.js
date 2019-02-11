@@ -1,5 +1,5 @@
 export default class Api {
-  static addOperation(firstNumber, secondNumber) {
+  static addOperation(firstNumber, secondNumber , operation) {
     return fetch(
       "https://20190204t145901-dot-dotted-byway-229018.appspot.com/services/operations/V1",
       {
@@ -11,16 +11,15 @@ export default class Api {
         body: JSON.stringify({
           firstNumber,
           secondNumber,
-          operation: "add"
+          operation, 
         })
       }
-    )
-      .then(res => res.json())
-      .then(json => {
-        return json.data;
-      })
-      .catch(ex => {
-        throw new Error("fetch failed" + ex);
-      });
+    ).then(res => res.json())
+    .then(json => {
+      return json.data;
+    })
+    .catch(ex => {
+      throw new Error("fetch failed" + ex);
+    });
   }
 }

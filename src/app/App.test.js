@@ -10,11 +10,11 @@ it('renders without crashing', () => {
 });
 
 it('check service add 5 and 5', async () => {
-  const response = await Api.addOperation(5,5);
+  const response = await Api.addOperation(5,5,"add");
   expect(response.result).toEqual("10");
 });
 
 it('check service add 15 and 2', async () => {
-  const response = await Api.addOperation(15,2);
+  const response = await Api.addOperation(15,2,"add");
   expect(response.result).toEqual("17");
 });
