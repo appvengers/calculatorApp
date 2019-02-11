@@ -1,17 +1,35 @@
 language: node_js
 node_js:
-  - "stable"
+- stable
 cache:
   directories:
-    - node_modules
+  - node_modules
 
 addons:
+  ssh_known_hosts: 
+    - maite.insuasti.ec
+    - 35.202.116.156
   sonarcloud:
-    organization: "appvengers"
+    organization: appvengers
     token:
-       secure: "Swk/WggCdi+DaACdbyjgEnDlXbROppA7Vt1CSz7xdDIaG84ECe1ndBrbwPO1rcf4yg9f"
+      secure: Swk/WggCdi+DaACdbyjgEnDlXbROppA7Vt1CSz7xdDIaG84ECe1ndBrbwPO1rcf4yg9f
 
 script:
-  - sonar-scanner
-  - npm test
-  - npm run build
+#- sonar-scanner
+- npm test -- --coverage
+- npm run build
+- rsync -r --delete-after --quiet build/. appvengers@maite.insuasti.ec:/home/appvengers/deploy/
+
+before_install:
+- openssl aes-256-cbc -K $encrypted_4c7eb49ab1c7_key -iv $encrypted_4c7eb49ab1c7_iv
+  -in rsa_key.enc -out /tmp/rsa_key -d
+- eval "$(ssh-agent -s)"
+- chmod 600 /tmp/rsa_key
+- ssh-add /tmp/rsa_key
+
+deploy:
+  provider: script
+  skip_cleanup: true
+  script: rsync -r --delete-after --quiet build/. grupocentrodigital@35.202.116.156:/var/www/html/ 
+  on:
+    branch: dev
