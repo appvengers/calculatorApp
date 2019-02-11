@@ -35,7 +35,7 @@ class App extends Component {
   
   calculate = () => {
     let values = this.state.result;
-    this.validateSyntax(values) ? this.doOperation(values) : alert("Revise la sintaxis de la operación");
+    this.validateSyntax(values) ? this.doOperation(values) : alert("Please, verify the syntax to calculate.");
   }
 
   validateSyntax(values) {
